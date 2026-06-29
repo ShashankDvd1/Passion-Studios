@@ -1,5 +1,6 @@
 using WonderForge.TinyWorld.Core.Utilities;
 using WonderForge.TinyWorld.Core.Events;
+using WonderForge.TinyWorld.Core.Save;
 
 namespace WonderForge.TinyWorld.Core.Runtime
 {
@@ -19,9 +20,11 @@ namespace WonderForge.TinyWorld.Core.Runtime
 
             // Core Infrastructure
             var eventBus = new EventBus();
+            var saveService = new SaveService();
             
             // Registration
             runtime.RegisterService(eventBus);
+            runtime.RegisterService(saveService);
 
             GameLogger.Log("Service Installation Complete.");
         }
