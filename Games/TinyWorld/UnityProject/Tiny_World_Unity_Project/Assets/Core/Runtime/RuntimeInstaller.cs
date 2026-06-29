@@ -1,4 +1,5 @@
 using WonderForge.TinyWorld.Core.Utilities;
+using WonderForge.TinyWorld.Core.Events;
 
 namespace WonderForge.TinyWorld.Core.Runtime
 {
@@ -16,14 +17,11 @@ namespace WonderForge.TinyWorld.Core.Runtime
         {
             GameLogger.Log("Starting Service Installation...");
 
-            // Example of how future services will be registered:
-            // var eventBus = new EventBus();
-            // var saveManager = new SaveManager(eventBus);
-            // runtime.RegisterService(eventBus);
-            // runtime.RegisterService(saveManager);
-
-            // TODO: (In Future Milestones) Instantiate and register concrete services here.
-            // We ensure no concrete services are implemented in this milestone, as requested.
+            // Core Infrastructure
+            var eventBus = new EventBus();
+            
+            // Registration
+            runtime.RegisterService(eventBus);
 
             GameLogger.Log("Service Installation Complete.");
         }
