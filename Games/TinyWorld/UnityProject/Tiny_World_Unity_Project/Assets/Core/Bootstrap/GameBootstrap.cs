@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WonderForge.TinyWorld.Core.Runtime;
 using WonderForge.TinyWorld.Core.Utilities;
+using WonderForge.TinyWorld.Core.Config;
 
 namespace WonderForge.TinyWorld.Core.Bootstrap
 {
@@ -18,13 +18,22 @@ namespace WonderForge.TinyWorld.Core.Bootstrap
         [Tooltip("The name of the next scene to load after initialization completes.")]
         [SerializeField] private string nextSceneName = "MainMenu";
 
-        // In a more advanced setup, this could be populated via a DI container or serialized references.
-        private readonly List<ICoreSystem> _coreSystems = new List<ICoreSystem>();
+        [Header("Dependencies")]
+        [Tooltip("The root ScriptableObject containing all tuning data.")]
+        [SerializeField] private GameConfig gameConfig;
+
+        // The central runtime orchestrator.
+        private GameRuntime _gameRuntime;
 
         private async void Start()
         {
             DontDestroyOnLoad(gameObject);
             GameLogger.Log("GameBootstrap started. Beginning initialization sequence...");
+
+            if (gameConfig == null)
+            {
+                GameLogger.LogError("GameConfig is missing from GameBootstrap! Please assign it in the inspector.");
+            }
 
             try
             {
@@ -39,24 +48,30 @@ namespace WonderForge.TinyWorld.Core.Bootstrap
         }
 
         /// <summary>
-        /// Sequentially initializes all registered core systems.
+        /// Instantiates the GameRuntime, installs services, and initializes them sequentially.
         /// </summary>
         private async Task InitializeSystemsAsync()
         {
-            // Note: In upcoming milestones, systems like EventBus, SaveSystem, and ConfigSystem 
-            // will be instantiated and added to _coreSystems here.
+            _gameRuntime = new GameRuntime();
 
-            foreach (var system in _coreSystems)
-            {
-                var systemName = system.GetType().Name;
-                GameLogger.Log($"Initializing {systemName}...");
-                
-                await system.InitializeAsync();
-                
-                GameLogger.Log($"{systemName} initialized successfully.");
-            }
+            // Inject the configuration into the installer.
+            RuntimeInstaller.InstallServices(_gameRuntime, gameConfig);
+
+            // Initialize all registered IInitializable services.
+            await _gameRuntime.InitializeAllAsync();
 
             GameLogger.Log("All core systems initialized.");
+        }
+
+        private void Update()
+        {
+            // Drive the runtime tick loop from this persistent MonoBehaviour.
+            _gameRuntime?.Tick(Time.deltaTime);
+        }
+
+        private void OnDestroy()
+        {
+            _gameRuntime?.Dispose();
         }
 
         /// <summary>
