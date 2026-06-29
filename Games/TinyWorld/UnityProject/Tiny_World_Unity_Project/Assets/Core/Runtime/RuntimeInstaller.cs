@@ -2,6 +2,9 @@ using WonderForge.TinyWorld.Core.Utilities;
 using WonderForge.TinyWorld.Core.Events;
 using WonderForge.TinyWorld.Core.Save;
 using WonderForge.TinyWorld.Core.Config;
+using WonderForge.TinyWorld.Core.Managers.Audio;
+using WonderForge.TinyWorld.Core.Managers.UI;
+using WonderForge.TinyWorld.Core.Managers.Input;
 
 namespace WonderForge.TinyWorld.Core.Runtime
 {
@@ -25,10 +28,20 @@ namespace WonderForge.TinyWorld.Core.Runtime
             var saveService = new SaveService();
             var configService = new ConfigService(gameConfig);
             
-            // Registration
+            // Core Managers
+            var audioService = new AudioService();
+            var uiService = new UIService();
+            var inputService = new InputService();
+            
+            // Registration - Infrastructure
             runtime.RegisterService(eventBus);
             runtime.RegisterService(saveService);
             runtime.RegisterService(configService);
+
+            // Registration - Managers
+            runtime.RegisterService(audioService);
+            runtime.RegisterService(uiService);
+            runtime.RegisterService(inputService);
 
             GameLogger.Log("Service Installation Complete.");
         }
