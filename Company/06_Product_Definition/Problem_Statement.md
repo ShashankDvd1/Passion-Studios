@@ -27,6 +27,7 @@ Tiny World will be a mobile (Android) simulation/collection game. To meet the 30
 
 ## Business & Technical Constraints
 - **Platform:** Android (Google Play).
+- **Engine:** Unity (Used strictly for GameObjects, visuals, and MonoBehaviours, while core logic remains in pure C#).
 - **Timeline:** 30-day MVP launch.
 - **Development Philosophy:** AI-assisted Vibe Coding (80% Building / 20% Planning).
 - **Engineering Rules:** Mobile-optimized, zero-allocation where possible, event-driven, and highly decoupled. The architecture must extract reusable systems into the "Game OS" naturally as they are validated by gameplay, rather than planning a massive engine upfront.
