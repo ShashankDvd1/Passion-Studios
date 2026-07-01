@@ -13,6 +13,15 @@ namespace WonderForge.TinyWorld.Core.Runtime
     /// </summary>
     public class GameRuntime : IDisposableService
     {
+        public static GameRuntime Instance { get; private set; }
+
+        public GameRuntime()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+        }
         private readonly List<IGameService> _services = new List<IGameService>();
         private readonly List<IInitializable> _initializables = new List<IInitializable>();
         private readonly List<IUpdatable> _updatables = new List<IUpdatable>();
@@ -99,6 +108,23 @@ namespace WonderForge.TinyWorld.Core.Runtime
         }
 
         /// <summary>
+        /// Retrieves a registered service of the specified type.
+        /// </summary>
+        public bool TryGetService<T>(out T service) where T : class, IGameService
+        {
+            foreach (var s in _services)
+            {
+                if (s is T typedService)
+                {
+                    service = typedService;
+                    return true;
+                }
+            }
+            service = null;
+            return false;
+        }
+
+        /// <summary>
         /// Disposes all registered services that implement IDisposableService and clears collections.
         /// </summary>
         public void Dispose()
@@ -122,6 +148,13 @@ namespace WonderForge.TinyWorld.Core.Runtime
             _updatables.Clear();
             _disposables.Clear();
             _isInitialized = false;
+
+            _isInitialized = false;
+            
+            if (Instance == this)
+            {
+                Instance = null;
+            }
 
             GameLogger.Log("GameRuntime disposed successfully.");
         }
