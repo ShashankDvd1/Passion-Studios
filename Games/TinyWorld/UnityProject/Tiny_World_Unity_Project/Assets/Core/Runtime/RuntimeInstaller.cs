@@ -5,6 +5,7 @@ using WonderForge.TinyWorld.Core.Config;
 using WonderForge.TinyWorld.Core.Managers.Audio;
 using WonderForge.TinyWorld.Core.Managers.UI;
 using WonderForge.TinyWorld.Core.Managers.Input;
+using WonderForge.TinyWorld.Core.Inventory;
 
 namespace WonderForge.TinyWorld.Core.Runtime
 {
@@ -28,6 +29,9 @@ namespace WonderForge.TinyWorld.Core.Runtime
             var saveService = new SaveService();
             var configService = new ConfigService(gameConfig);
             
+            // Core Gameplay Systems
+            var inventoryService = new InventoryService(saveService, eventBus);
+
             // Core Managers
             var audioService = new AudioService();
             var uiService = new UIService();
@@ -37,6 +41,9 @@ namespace WonderForge.TinyWorld.Core.Runtime
             runtime.RegisterService(eventBus);
             runtime.RegisterService(saveService);
             runtime.RegisterService(configService);
+
+            // Registration - Gameplay
+            runtime.RegisterService(inventoryService);
 
             // Registration - Managers
             runtime.RegisterService(audioService);
