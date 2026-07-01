@@ -9,6 +9,7 @@ using WonderForge.TinyWorld.Core.Inventory;
 using WonderForge.TinyWorld.Core.Managers.Time;
 using WonderForge.TinyWorld.Core.Managers.Expedition;
 using WonderForge.TinyWorld.Core.Managers.Crafting;
+using WonderForge.TinyWorld.Core.Managers.Ads;
 
 namespace WonderForge.TinyWorld.Core.Runtime
 {
@@ -37,6 +38,7 @@ namespace WonderForge.TinyWorld.Core.Runtime
             var timeService = new TimeService(saveService);
             var expeditionService = new ExpeditionService(saveService, timeService, inventoryService);
             var craftingService = new CraftingService(inventoryService, eventBus);
+            var adService = new MockAdService();
 
             // Core Managers
             var audioService = new AudioService();
@@ -53,6 +55,7 @@ namespace WonderForge.TinyWorld.Core.Runtime
             runtime.RegisterService(timeService);
             runtime.RegisterService(expeditionService);
             runtime.RegisterService(craftingService);
+            runtime.RegisterService(adService);
 
             // Registration - Managers
             runtime.RegisterService(audioService);
