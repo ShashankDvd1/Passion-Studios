@@ -27,7 +27,7 @@ namespace WonderForge.TinyWorld.Core.Inventory
         public async Task InitializeAsync()
         {
             GameLogger.Log($"{LOG_PREFIX} Loading inventory data...");
-            _data = await _saveService.LoadDataAsync<InventoryData>(SAVE_KEY);
+            _data = await _saveService.LoadAsync<InventoryData>(SAVE_KEY);
             if (_data == null)
             {
                 _data = new InventoryData();
@@ -80,7 +80,7 @@ namespace WonderForge.TinyWorld.Core.Inventory
         private void SaveAsync()
         {
             // Fire and forget save to prevent blocking the main thread
-            _ = _saveService.SaveDataAsync(SAVE_KEY, _data);
+            _ = _saveService.SaveAsync(SAVE_KEY, _data);
         }
     }
 }
