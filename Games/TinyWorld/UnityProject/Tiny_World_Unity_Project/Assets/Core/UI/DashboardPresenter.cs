@@ -4,6 +4,7 @@ using WonderForge.TinyWorld.Core.Events;
 using WonderForge.TinyWorld.Core.Inventory;
 using WonderForge.TinyWorld.Core.Runtime;
 using WonderForge.TinyWorld.Core.Managers.Crafting;
+using WonderForge.TinyWorld.Core.Managers.Expedition;
 
 namespace WonderForge.TinyWorld.UI
 {
@@ -20,6 +21,9 @@ namespace WonderForge.TinyWorld.UI
 
         [Header("Notifications")]
         public TextMeshProUGUI NotificationText;
+
+        [Header("Status UI")]
+        public TextMeshProUGUI StatusText;
 
         private void OnEnable()
         {
@@ -75,6 +79,31 @@ namespace WonderForge.TinyWorld.UI
             {
                 NotificationText.text = $"Successfully crafted: {evt.Recipe.DisplayName}!";
                 // TODO: Add simple animation to fade out text
+            }
+        }
+
+        private void Update()
+        {
+            // Simple polling for the countdown timer
+            if (GameRuntime.Instance != null && GameRuntime.Instance.TryGetService<IExpeditionService>(out var expService))
+            {
+                if (expService.IsExploring())
+                {
+                    int remaining = expService.GetRemainingSeconds();
+                    if (remaining > 0)
+                    {
+                        if (StatusText != null) StatusText.text = $"Exploring: {remaining}s left";
+                    }
+                    else
+                    {
+                        if (StatusText != null) StatusText.text = "Expedition Complete! Checking in...";
+                        expService.TryCompleteExpedition();
+                    }
+                }
+                else
+                {
+                    if (StatusText != null) StatusText.text = "Status: Idle";
+                }
             }
         }
     }
